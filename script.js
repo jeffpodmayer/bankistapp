@@ -61,11 +61,46 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
+// INJECTING AN ARRAY INTO THE HTML TO BE DISPLAYED (line 76)
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = ``;
+  movements.forEach(function (mov, i) {
+    const type = mov > 0 ? `deposit` : `withdrawal`;
+    const html = `<div class="movements__row">
+    <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+    <div class="movements__value">${mov}</div>
+  </div>`;
+    containerMovements.insertAdjacentHTML(`afterbegin`, html);
+  });
+};
+displayMovements(account1.movements);
+
+// SHOWS OVERARCHING BALANCE
+const calcPrintBalance = function (movements) {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance} EUR`;
+};
+calcPrintBalance(account1.movements);
+
+//CREATING A USERNAME
+const createUsernames = function (acc) {
+  acc.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(` `)
+      .map((name) => name[0])
+      .join(``);
+  });
+};
+
+createUsernames(accounts);
+console.log(accounts);
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
 
-// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 /*
@@ -136,7 +171,7 @@ movements.forEach(function (mov, i, arr) {
     console.log(`Movement ${i + 1}:You withdrew ${Math.abs(mov)}`);
   }
 });
-*/
+
 // FOR EACH WITH MAPS
 const currencies = new Map([
   ["USD", "United States dollar"],
@@ -152,5 +187,106 @@ currencies.forEach(function (value, key, map) {
 const currenciesUnique = new Set([`USD`, `GBP`, `USD`, `EUR`, `EUR`]);
 console.log(currenciesUnique);
 currenciesUnique.forEach(function (value, _, map) {
-  console.log(`${key}:  ${value}`);
+  console.log(`${_}:  ${value}`);
 });
+
+
+
+// CODING CHALLNEGE # 1
+const checkDogs = function (dogsJulia, dogsKate) {
+  const juliaDogs = dogsJulia.slice(1, 3);
+  const newArr = [...juliaDogs, ...dogsKate];
+  // console.log(newArr);
+  newArr.forEach(function (dog, i) {
+    if (dog >= 3) {
+      console.log(`Dog number ${i + 1} is an adult and is ${dog} years old!`);
+    } else {
+      console.log(`Dog number ${i + 1} is still a puppy.`);
+    }
+  });
+};
+
+checkDogs([3, 5, 2, 12, 7], [4, 1, 15, 8, 3]);
+
+
+
+const eurToUsd = 1.1;
+
+// const movementsUSD = movements.map(function (mov) {
+//   return mov * eurToUsd;
+// });
+
+const movementsUSD = movements.map((mov) => mov * eurToUsd);
+
+console.log(movements);
+console.log(movementsUSD);
+
+const movementsUSDFor = [];
+for (const mov of movements) movementsUSDFor.push(mov * eurToUsd);
+console.log(movementsUSDFor);
+
+const movementsDesc = movements.map((mov, i) => {
+  if (mov > 0) {
+    return `Movement ${i + 1}: You deposited ${mov}`;
+  } else {
+    return `Movement ${i + 1}:You withdrew ${Math.abs(mov)}`;
+  }
+});
+
+console.log(movementsDesc);
+
+*/
+//FILTERING
+const deposits = movements.filter(function (mov) {
+  return mov > 0;
+});
+
+console.log(movements);
+console.log(deposits);
+
+//FILTERING WITH FPOR LOOP
+const depositsFor = [];
+for (const mov of movements) if (mov > 0) depositsFor.push(mov);
+console.log(depositsFor);
+
+// FILTERING WITHDRAWALS
+const withdrawals = movements.filter(function (mov) {
+  return mov < 0;
+});
+
+console.log(withdrawals);
+
+// REDUCE
+console.log(movements);
+// accumulator is lik a snowball
+const balance = movements.reduce(function (acc, cur, i, arr) {
+  console.log(`Iteration ${i}: ${acc}`);
+  return acc + cur;
+}, 0);
+
+console.log(balance);
+
+// FOR OF LOOP SAME AS REDUCE
+let balance2 = 0;
+for (const mov of movements) balance2 += mov;
+console.log(balance2);
+
+// MAXIMUM VALUE
+const max = movements.reduce((acc, mov) => {
+  if (acc > mov) return acc;
+  else return mov;
+}, movements[0]);
+console.log(max);
+
+////////////  CODING CHALLENGE # 2 //////////////////////////////
+const calcAverageHumanAge = function (ages) {
+  const humanAges = ages.map((age) => (age <= 2 ? 2 * age : 16 + age * 4));
+  const adults = humanAges.filter((age) => age >= 18);
+  console.log(adults, humanAges);
+
+  const average = adults.reduce((acc, age) => acc + age, 0) / adults.length;
+  return average;
+};
+
+const avg1 = calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+console.log(avg1);
