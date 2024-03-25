@@ -82,7 +82,6 @@ const calcPrintBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${acc.balance}€`;
 };
-// calcPrintBalance(account1.movements);
 
 //DISPLAY TOTAL SUMMARY
 const calcDisplaySummary = function (acc) {
@@ -106,8 +105,6 @@ const calcDisplaySummary = function (acc) {
     .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = `${interest}€`;
 };
-
-// calcDisplaySummary(account);
 
 //CREATING A USERNAME
 const createUsernames = function (acc) {
