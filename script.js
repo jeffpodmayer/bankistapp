@@ -126,9 +126,10 @@ const updateUI = function (acc) {
   //display sumary
   calcDisplaySummary(acc);
 };
+
+//EVENT HANDLERS
 //LOGGING IN A USER
 //FIND A USER AND GET ALL THE RELATED INFO
-//EVENT HANDLERS
 let currentAccount;
 btnLogin.addEventListener(`click`, function (e) {
   //PREVENTS FORM FROM SUBMITTING
@@ -170,8 +171,28 @@ btnTransfer.addEventListener(`click`, function (e) {
     // DOING THE TRANSFER
     currentAccount.movements.push(-amount);
     receiverAccount.movements.push(amount);
+
+    //UPDATES UI
     updateUI(currentAccount);
   }
+});
+
+btnClose.addEventListener(`click`, function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      (acc) => acc.username === currentAccount.username
+    );
+    console.log(index);
+    //DELETE ACCOUNT
+    accounts.splice(index, 1);
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = ``;
 });
 
 /////////////////////////////////////////////////
