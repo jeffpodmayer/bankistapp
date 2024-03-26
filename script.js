@@ -172,15 +172,42 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
+const startLogoutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const seconds = String(time % 60).padStart(2, 0);
+    // Set time to 5 monutes
+
+    // In each call, print remaining time to UI
+    labelTimer.textContent = `${min} : ${seconds}`;
+
+    // When at 0 seconds, stop timer and logout user
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = `Log in to to get started!`;
+      containerApp.style.opacity = 0;
+    }
+    // Decrease one second
+    time--;
+  };
+
+  let time = 120;
+
+  //Call time every secnd
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
+
 //EVENT HANDLERS
 //LOGGING IN A USER
 //FIND A USER AND GET ALL THE RELATED INFO
-let currentAccount;
+let currentAccount, timer;
 
 // FAKE ALWAYS LOGGED IN
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 
 // EXPERIMENTING WITH THE API
 
@@ -229,6 +256,9 @@ btnLogin.addEventListener(`click`, function (e) {
     inputLoginUsername.value = inputLoginPin.value = ``;
     inputLoginPin.blur();
 
+    if (timer) clearInterval(timer);
+    timer = startLogoutTimer();
+
     //UPDATE UI
     updateUI(currentAccount);
   }
@@ -258,6 +288,10 @@ btnTransfer.addEventListener(`click`, function (e) {
 
     //UPDATES UI
     updateUI(currentAccount);
+
+    // Reset Timer
+    clearInterval(timer);
+    timer = startLogoutTimer();
   }
 });
 
@@ -270,14 +304,18 @@ btnLoan.addEventListener(`click`, function (e) {
     amount > 0 &&
     currentAccount.movements.some((mov) => mov >= amount * 0.1)
   ) {
-    // Add movement
-    currentAccount.movements.push(amount);
+    setTimeout(function () {
+      // Add movement
+      currentAccount.movements.push(amount);
 
-    // Add Loan date
-    currentAccount.movementsDates.push(new Date().toISOString());
+      // Add Loan date
+      currentAccount.movementsDates.push(new Date().toISOString());
 
-    //Update UI
-    updateUI(currentAccount);
+      //Update UI
+      updateUI(currentAccount);
+      clearInterval(timer);
+      timer = startLogoutTimer();
+    }, 2500);
   }
   inputLoanAmount.value = ``;
 });
@@ -315,23 +353,40 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 ////////////// SECTION 12 /////////////////////
 
-/////////////////// INTERNATIONALIZATION WITH NUMBERS //////////////////////
-const num = 3884746.23;
-
-const options = {
-  style: `currency`,
-  unit: `celsius`,
-  currency: `EUR`,
-  // useGrouping: false,
-};
-console.log(`US:`, new Intl.NumberFormat(`en-US`, options).format(num));
-console.log(`GER:`, new Intl.NumberFormat(`de-DE`, options).format(num));
-console.log(`Syria:`, new Intl.NumberFormat(`ar-SY`, options).format(num));
-
-console.log(
-  `Browser:`,
-  new Intl.NumberFormat(navigator.language, options).format(num)
+/////////////////// SET TIMEOUT //////////////////////
+const ingredients = [`olives`, `mushrooms`];
+const pizzaTimer = setTimeout(
+  (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2}🍕`),
+  3000,
+  ...ingredients
 );
+console.log(`Waiting....`);
+
+if (ingredients.includes(`spinach`)) clearTimeout(pizzaTimer);
+
+////////////////////// SET INTERVAL //////////////////////////
+// setInterval(function () {
+//   const now = new Date();
+//   console.log(now);
+// }, 3000);
+
+/////////////////// INTERNATIONALIZATION WITH NUMBERS //////////////////////
+// const num = 3884746.23;
+
+// const options = {
+//   style: `currency`,
+//   unit: `celsius`,
+//   currency: `EUR`,
+//   // useGrouping: false,
+// };
+// console.log(`US:`, new Intl.NumberFormat(`en-US`, options).format(num));
+// console.log(`GER:`, new Intl.NumberFormat(`de-DE`, options).format(num));
+// console.log(`Syria:`, new Intl.NumberFormat(`ar-SY`, options).format(num));
+
+// console.log(
+//   `Browser:`,
+//   new Intl.NumberFormat(navigator.language, options).format(num)
+// );
 
 /*
 /////////////////// OPERATIONS WITH DATES //////////////////////
